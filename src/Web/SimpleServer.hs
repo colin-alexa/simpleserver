@@ -12,18 +12,16 @@ import Control.Concurrent (forkIO)
 import Network.Socket
 import System.IO
 
-type HTTPHandler = HTTPRequest -> HTTPResponse
+type HTTPHandler = HTTPRequest -> IO HTTPResponse
 
 route :: (Socket, SockAddr) -> HTTPHandler -> IO ()
 route (sock, _) handler = do
     connHdl <- socketToHandle sock ReadWriteMode
     hSetBuffering connHdl NoBuffering
     recvd <- hGetContents connHdl
-
-    let request = getHttpRequest recvd
-        response = case request of
+    response <- case getHttpRequest recvd of
             (Right req) -> handler req
-            (Left error) -> badRequest (show error)
+            (Left error) -> return . badRequest . show $ error
     hPutStrLn connHdl (format response)
 
     hClose connHdl
@@ -42,4 +40,5 @@ simpleServe port handler = do
     listen sock 2                              -- set a max of 2 queued connections
     serveOn sock handler
 
-echo = simpleServe 3030 (okMessage . show)
+echo :: HTTPHandler
+echo = return . okMessage . show

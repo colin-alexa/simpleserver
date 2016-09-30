@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                simpleserver
-version:             0.1.0.0
+version:             0.2.0.0
 synopsis:            Simple http server library
 -- description:         
 license:             MIT
@@ -23,3 +23,13 @@ library
                        parsec,
                        QuickCheck
   hs-source-dirs:      src
+
+executable echo-server
+  main-is:             Echo.hs
+  other-modules:       Web.SimpleServer, Web.SimpleServer.HTTPRequest, Web.SimpleServer.HTTPResponse 
+  build-depends:       base >= 4.6,
+                       network,
+                       containers,
+                       parsec
+  hs-source-dirs:      src
+

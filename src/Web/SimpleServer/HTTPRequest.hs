@@ -1,5 +1,6 @@
 module Web.SimpleServer.HTTPRequest (
       HTTPRequest(..)
+    , Method(..)
     , getHttpRequest
 ) where
 
